@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 from mms.models import *
@@ -9,6 +11,9 @@ from mms.serilizers import *
 
 
 class CompanyViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         company = Company.objects.all()
         serializer = CompanySerializer(company, many=True, context={"request": request})
