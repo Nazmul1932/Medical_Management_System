@@ -148,6 +148,3 @@ class MedicineViewSet(viewsets.ViewSet):
         serializer.save()
         return Response({"error": False, "message": "Data has been updated"})
 
-
-class chu(viewsets.ViewSet):
-    pass
