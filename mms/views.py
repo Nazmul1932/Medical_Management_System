@@ -184,7 +184,7 @@ class MedicineViewSet(viewsets.ViewSet):
         serializer = MedicineSerializer(medicine, context={"request": request})
 
         serializer_data = serializer.data
-        # Accessing All the Medicine Details of Current Medicine ID
+
         medicine_details = MedicalDetails.objects.filter(medicine_id=serializer_data["id"])
         medicine_details_serializers = MedicalDetailsSerializerSimple(medicine_details, many=True)
         serializer_data["medicine_details"] = medicine_details_serializers.data
@@ -197,17 +197,17 @@ class MedicineViewSet(viewsets.ViewSet):
         serializer=MedicineSerializer(medicine,data=request.data,context={"request":request})
         serializer.is_valid()
         serializer.save()
-        #print(request.data["medicine_details"])
+
         for salt_detail in request.data["medicine_details"]:
             if salt_detail["id"]==0:
-                #For Insert New Salt Details
+
                 del salt_detail["id"]
                 salt_detail["medicine_id"]=serializer.data["id"]
                 serializer2 = MedicalDetailsSerializer(data=salt_detail,context={"request": request})
                 serializer2.is_valid()
                 serializer2.save()
             else:
-                #For Update Salt Details
+
                 queryset2=MedicalDetails.objects.all()
                 medicine_salt=get_object_or_404(queryset2,pk=salt_detail["id"])
                 del salt_detail["id"]
@@ -217,4 +217,45 @@ class MedicineViewSet(viewsets.ViewSet):
                 print("UPDATE")
 
         return Response({"error":False,"message":"Data Has Been Updated"})
+
+
+class CompanyAccountViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+
+        try:
+
+            serializer = CompanyAccountSerializer(data=request.data, context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            dict_response = {"error": False, "message": "Company Account Data Save Successfully"}
+        except:
+
+            dict_response = {"error": True, "message": "Error During Saving Company Account Data"}
+
+        return Response(dict_response)
+
+    def list(self, request):
+
+        company_account = CompanyAccount.objects.all()
+        serializer = CompanyAccountSerializer(company_account, many=True, context={"request": request})
+        response_dict = {"error": False, "message": "All Company Account list data", "data": serializer.data}
+
+        return Response(response_dict)
+
+    def retrieve(self, request, pk=None):
+        queryset = CompanyAccount.objects.all()
+        company_account = get_object_or_404(queryset, pk=pk)
+        serializer = CompanyAccountSerializer(company_account, context={"request": request})
+        return Response({"error": False, "message": "Single data Fetch", "data": serializer.data})
+
+    def update(self, request, pk=None):
+        queryset = CompanyAccount.objects.all()
+        company_account = get_object_or_404(queryset, pk=pk)
+        serializer = CompanyAccountSerializer(company_account, data=request.data, context={"request": request})
+        serializer.is_valid()
+        serializer.save()
+        return Response({"error": False, "message": "Data has been updated"})
 

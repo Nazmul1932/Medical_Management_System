@@ -10,6 +10,7 @@ router = routers.DefaultRouter()
 router.register("company", views.CompanyViewSet, basename="company")
 router.register("companybank", views.CompanyBankViewSet, basename="companybank")
 router.register("medicine", views.MedicineViewSet, basename="medicine")
+router.register("company_account", views.CompanyAccountViewSet, basename="company_account")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
