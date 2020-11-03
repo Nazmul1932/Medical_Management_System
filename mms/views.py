@@ -224,17 +224,13 @@ class CompanyAccountViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
-
         try:
-
             serializer = CompanyAccountSerializer(data=request.data, context={"request": request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             dict_response = {"error": False, "message": "Company Account Data Save Successfully"}
         except:
-
             dict_response = {"error": True, "message": "Error During Saving Company Account Data"}
-
         return Response(dict_response)
 
     def list(self, request):
@@ -255,6 +251,47 @@ class CompanyAccountViewSet(viewsets.ViewSet):
         queryset = CompanyAccount.objects.all()
         company_account = get_object_or_404(queryset, pk=pk)
         serializer = CompanyAccountSerializer(company_account, data=request.data, context={"request": request})
+        serializer.is_valid()
+        serializer.save()
+        return Response({"error": False, "message": "Data has been updated"})
+
+
+class EmployeeViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+
+        try:
+
+            serializer = EmployeeSerializer(data=request.data, context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            dict_response = {"error": False, "message": "Employee Data Save Successfully"}
+        except:
+
+            dict_response = {"error": True, "message": "Error During Saving Employee Data"}
+
+        return Response(dict_response)
+
+    def list(self, request):
+
+        employee = Employee.objects.all()
+        serializer = EmployeeSerializer(employee, many=True, context={"request": request})
+        response_dict = {"error": False, "message": "All Company Employee list data", "data": serializer.data}
+
+        return Response(response_dict)
+
+    def retrieve(self, request, pk=None):
+        queryset = Employee.objects.all()
+        employee = get_object_or_404(queryset, pk=pk)
+        serializer = EmployeeSerializer(employee, context={"request": request})
+        return Response({"error": False, "message": "Single data Fetch", "data": serializer.data})
+
+    def update(self, request, pk=None):
+        queryset = Employee.objects.all()
+        employee = get_object_or_404(queryset, pk=pk)
+        serializer = EmployeeSerializer(employee, data=request.data, context={"request": request})
         serializer.is_valid()
         serializer.save()
         return Response({"error": False, "message": "Data has been updated"})
