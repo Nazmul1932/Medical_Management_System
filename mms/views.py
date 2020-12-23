@@ -386,3 +386,12 @@ class EmployeeSalaryByEIDViewSet(generics.ListAPIView):
         employee_id = self.kwargs["employee_id"]
         return EmployeeSalary.objects.filter(employee_id=employee_id)
 
+
+class MedicineByNameViewSet(generics.ListAPIView):
+    serializer_class = MedicineSerializer
+
+    def get_queryset(self):
+        name = self.kwargs["name"]
+        return Medicine.objects.filter(name__contains=name)
+
+
